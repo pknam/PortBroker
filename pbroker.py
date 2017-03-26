@@ -4,10 +4,18 @@
 
 import socket
 import _thread
+import signal
+import sys
 
 # open "listening_port" serves same functionality of "local_port"
 listening_port = 8989
 local_port = 80
+
+
+def sigint_handler(signal, frame):
+    print()
+    print("[*] Ctrl+C  Pressed")
+    sys.exit(0)
 
 
 def with_cli(in_sock, out_sock):
@@ -23,6 +31,7 @@ def with_cli(in_sock, out_sock):
             break
     in_sock.close()
     out_sock.close()
+    print("[*] Disconnected")
 
 
 def with_serv(in_sock, out_sock):
@@ -43,6 +52,8 @@ input_s.bind(('', listening_port))
 input_s.listen(5)
 print("[*] Server Started")
 print("[*] {} Port Listening..".format(listening_port))
+print("[*] Press Ctrl+C to exit")
+signal.signal(signal.SIGINT, sigint_handler)
 
 
 # support multi-connection
